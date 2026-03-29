@@ -1,0 +1,5 @@
+{
+  "name": "TRShooting",
+  "description": "A clean, dark-themed login screen with Firebase authentication and device registration.",
+  "requestFramePermissions": []
+}

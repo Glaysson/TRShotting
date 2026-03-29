@@ -1,0 +1,35 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account with device registration",
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string",
+          "description": "User login identifier"
+        },
+        "senha": {
+          "type": "string",
+          "description": "User password (hashed or plain for this test)"
+        },
+        "dataCadastro": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Registration date"
+        },
+        "macAddress": {
+          "type": "string",
+          "description": "Device MAC address (or unique identifier)"
+        }
+      },
+      "required": ["login", "senha", "dataCadastro"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User documents"
+    }
+  }
+}

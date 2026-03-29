@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['login', 'senha', 'dataCadastro']) &&
+             data.login is string && data.login.size() > 0 &&
+             data.senha is string && data.senha.size() > 0 &&
+             data.dataCadastro is string;
+    }
+
+    match /users/{userId} {
+      // Allow read/write for the user themselves
+      allow read, write: if isOwner(userId);
+      
+      // Allow creation for the first login (if the user exists in Auth)
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data);
+      
+      // Allow updates to macAddress on first login
+      allow update: if isOwner(userId) && 
+                    isValidUser(request.resource.data) &&
+                    (!('macAddress' in resource.data) || resource.data.macAddress == request.resource.data.macAddress);
+    }
+  }
+}
